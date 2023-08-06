@@ -220,3 +220,67 @@ Binary search is a search algorithm that is used to quickly find a value in a so
 * Two's complement is a mathematical operation to reversibly convert a positive binary number into a negative binary number with equivalent negative value, using the binary digit with the greatest place value as the sign to indicate whether the binary number is positive or negative. 
 #### Solve
 * -0 and +0
+
+## Trees
+### Definition
+* Tree data structure is a hierarchical structure that is used to represent and organize data in a way that easy to navigate and search
+* It is a collection of nodes that are connected by edges and has a hierarchical relationship between the nodes.
+* Root is the topmost node. and nodes below it are called child nodes.
+* Each node can have multiple child nodes, and these child nodes can also have their own child nodes, forming a recursive structure.  
+### Traversal
+#### BFS (Breadth-first Search)
+* Breadth-first Search is an algorithm for searching a tree data structure for a node that satisfies the given property.
+* It starts at the tree root and explorers all nodes at the present depth prior to moving on to the next depth level of nodes. 
+* All connections at one time
+* Level order (using Queue)
+* Time complexity: $O(n)$
+* Space complexity: best: $O(1)$ worst: $O(n/2) = O(n)$
+#### DFS (Depth-first Search)
+* Depth-first Search is an algorithm for traversing or searching tree or graph data structures.
+* The algorithm starts at the root of node and explores as far as possible along each branch before backtracking.
+* time complexity: $O(n)$
+* space complexity: best $O(log n) = height of the tree$ / worst $O(n)$ 
+* In-order: L - Root - R
+* Pre-order: Root - L - R
+* Post-order: L - R - Root
+
+## Binary Search tree
+*  Binary Search tree, also known as an ordered or sorted binary tree, is rooted rooted binary tree data structure with the key of each internal node being greater than all the respective node's left subtree and less than the ones its right sub tree.
+### Search
+* Compare the given value, if it's less than the key, go left. If it's greater than the key, go right.
+* If a node is a leaf (has no children), you can insert the given node to the node.
+* Time Complexity: $O(log n) = height of the tree$
+### Insert
+* Compare the given value, if it's less than the key, go left. If it's greater than the key, go right.
+* If the leaf node, insert the target based on the same criteria.
+### Delete
+1. The given node is a leaf node, the node will be replaced by `nil`
+2. The given node has one child, the node will be replaced by `nil` and the node's child will take over the node's position
+3. The given node has two children, you'll find the key value that is bigger than the target but the smallest in the right subtree of the node and replace the target node and the smallest node.
+### Travesal
+1. Pre-order
+2. In-order
+3. Post-order
+### Discussion
+1. Runtime
+   1. Search - best: $O(log n)$ / worst: $O(n)$ - consequent order
+   2. Insert - best: $O(log n)$ / worst: $O(n)$ - consequent order
+   3. Delete - best: $O(log n)$ / worst: $O(n)$ - consequent order
+2. Duplicate value?
+   1. It's up to your choice. In most cases, best practice will be in the right leaf because it makes more sense when we traverse it in-order.
+### Find the Maximum Depth or Height of given Binary Tree
+1. The height of an empty tree is `0`.
+2. Use DFS
+   1. Recursively calculate the height of the left and the right subtrees of a node and assign height to the node as max of the heights of two children + 1.
+   2. Time complexity: $O(n)$
+   3. Auxiliary Space: $O(n)$ due to recursive stack 
+3. Use BFS
+   1. Use Queue.
+      1. Traverse the tree in level order traversal starting from root
+      2. Run a while loop till Q is not empty 
+         1. Store the front element of Q and Pop out the front element
+         2. If the front of Q is `NULL` then incremenet depth by one and if queue is not empty then push NULL into the Q.
+         3. Else if the element is not `NULL` then check for its left and right children and if they are not NULL push them into Q.
+      3. Return depth
+   2. Time Complexity: $O(n)$
+   3. Auxiliary Space: $O(n)$
