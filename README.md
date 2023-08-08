@@ -284,3 +284,506 @@ Binary search is a search algorithm that is used to quickly find a value in a so
       3. Return depth
    2. Time Complexity: $O(n)$
    3. Auxiliary Space: $O(n)$
+
+## Heap
+* A tree-based data structure, complete binary tree, and min/max heap property. (we can have `n'ary` heap as well)
+* A Heap is a specialized tree-based data structure that satisfies the heap property:
+    * In a `max heap`, for any given node C, if P is a parent node of C, then the key (the value) of P is greater than or eqaul to the key of C.
+    * In a `min heap`, the key of P is less than or equal to the key of C.
+    * The node at the top of the heap with no parent node is called the root node
+* Often interchangably used with Priority Queue
+* In a heap, the highest priority element is always stored at the root.
+* However, a heap is not a sorted structure; it can be regarded as a partially ordered. A heap is a useful data structure when it is necessary to repeatedly remove the object with the the highest or lowest priority, or when insertions need to be interspersed with removals of the root node.
+
+### Binary Trees
+* A binary tree is a tree data structure in which each node has at most two children, which are referred to as the left child and the right child.
+#### Types
+* A `rooted` binary tree has a root node and every node has at most two children
+* A `full` (`proper` or `plane` or `strict`) binary tree is a tree in which every node has **either 0 or 2 children**
+    * A single vertex (a single node as a root node)
+    * A tree whose root node has two subtrees, both of which are full binary trees
+* A `complete` binary tree is a binary tree in which **every level, except possibly the last, is completely filled**, and all nodes in the last level are as far left as possible.
+    * A `perfect` binary tree is a binary tree in which all interior nodes have **two children and all leaves have the same depth or same level**.
+    * A `almost complete` binary tree: 
+        * Leaves should be present only at the last and 2nd last level
+        * Leaves should be filled from left to right in the same level
+* A `balanced` binary tree is a binary tree structure in which the left and right subtrees of **every node differ in height by no more than 1** (the number of edges from the top-most node to the farthest node in a subtree).
+* A `degenerate` (or `pathological`) tree is where each parent node has only one associated child node.
+
+### Find the Maximum Depth or Height of given Binary Tree
+1. The height of an empty tree is `0`.
+2. Use DFS
+   1. Recursively calculate the height of the left and the right subtrees of a node and assign height to the node as max of the heights of two children + 1.
+   2. Time complexity: $O(n)$
+   3. Auxiliary Space: $O(n)$ due to recursive stack 
+3. Use BFS
+   1. Use Queue.
+      1. Traverse the tree in level order traversal starting from root
+      2. Run a while loop till Q is not empty 
+         1. Store the front element of Q and Pop out the front element
+         2. If the front of Q is `NULL` then incremenet depth by one and if queue is not empty then push NULL into the Q.
+         3. Else if the element is not `NULL` then check for its left and right children and if they are not NULL push them into Q.
+      3. Return depth
+   2. Time Complexity: $O(n)$
+   3. Auxiliary Space: $O(n)$
+
+### Operations
+#### Basic
+* `find-max`/`find-min` (= `peek`): find a maximum item of a max-heap, or minimum item of a min-heap, respectively
+* `insert` (= `push`): adding a new key to the heap
+    1. Add the node as a leaf node to the bottom of the tree
+    2. HeapifyUp: bubble sort the heap until the heap meets the heap min/max property
+* `extract-max`/`extract-min` (= pop): returns the node of maximum value from a max heap [or minimum value from a min heap] after removing it from the heap
+    1. Remove the max/min value (root node) from the heap
+    2. Make the most recent added node to the root node
+    3. HeapifyDown: bubble sort the items until the heap meets the heap min/max property
+* `delete-max`/`delete-min`: removing the root node of a max heap (or min heap), respectively
+    1. Same process with the
+* `replace`: pop root and push a new key. More efficient than pop followed by push, since only need to balance once, not twice, and appropriate for fixed-size heaps
+#### Creation
+* `create-heap`: create an empty heap
+* `heapify`: create a heap out of given array of elements
+* `merge` (`union`): joining two heaps to form a valid new heap containing all the elements of both, preserving the original heaps.
+* `meld`: joining tow heaps to form a valid new heap containing all the elements of both, destroying the original heaps
+#### Inspection
+* `size`: return the number of items in the heap
+* `is-empty`: return true if the heap is empty, false otherwise
+#### Internal
+* `increase-key` or `decrease-key`: updating a key within a max-heap or min-heap, respectively
+* `delete`: delete an arbitary node (followed by moving last node and sifting to maintaining heap) 
+* `sift-up` (`HeapifyUp`): move a node up in the tree, as long as needed; used to restore heap condition after insertion. Called `sift` because node moves up the tree until it reaches the correct level, as in a sieve.
+* `sift-down` (`HeapifyDown`): move a node down in the treem, similar to sift-up; used to restore heap condition after deletion or replacement
+
+### Types of Heap 
+#### Max-heap
+* `max-heap` is a complete binary tree in which root is always be maximum and it's applied to the sub trees as well.
+#### Min-heap
+* `min-heap` is a complete binary tree in which root is always be minimum and it's applied to the sub trees as well.
+
+### Representation of Heap
+#### Tree Conecepts
+* A tree can be represented in the form of an array
+* indices:
+    * Parent: `i`
+    * Left Child: $2*i + 1$
+    * Right Child: $2*i + 2$
+    * If child index is `i`, then parent index is $⌈ i / 2 ⌉ - 1$ or $ceil(i / 2) - 1$
+        * `t = [1, 3, 5, 6, 7]`
+            ```bash
+            1
+            ├── 3
+            │   ├── 6
+            │   └── 7
+            └── 5
+            ```
+        * e.g., `t[3] = 6`, parent = $⌈ 3 / 2 ⌉ - 1 = ceil(3 / 2) - 1 = 2 - 1 = 1$ `t[1] = 3`
+##### Height
+* number of elements = `N`
+* height = `h` = $⌊log_2 N⌋ = floor(log_2 N)$
+    | N                | 1   | 2   | 3    | 4   | 5    | ... |
+    | ---------------- | --- | --- | ---- | --- | ---- | --- |
+    | h (=$⌊log_2 N⌋$) | 0   | 1   | 1    | 2   | 2    | ... |
+    | $log_2 N$        | 0   | 1   | 1.58 | 2   | 2.23 | ... |
+* the max number of nodes at height `h` = $2 ^ h$
+* the max number of nodes in the entire tree = $2^{h + 1} - 1$
+    * $\sum_{n=0}^{n} 2^n$
+    * $2S_n - S_n = S_n = 2^{h + 1} - 1$
+##### The Max Array size for heap
+* Let `h` is the height of the tree, then $2^{h + 1} - 1$ will be the max size of array.
+##### Range
+* In a complete binary tree, Range of leaves = $⌊N / 2⌋ = floor(N / 2) + 1$ to $N - 1$ (0-based)
+    * `t = [1, 2, 3, 9, 5, 6, 7]`
+        ```bash
+        1
+        ├── 2
+        │   ├── 9
+        │   └── 5
+        └── 3
+            ├── 6
+            └── 7
+        ```
+        * e.g., leaves `[9, 5, 6, 7]`
+            * indices: $⌊N / 2⌋ = ⌊7 / 2⌋ = 3$ to $6$
+
+### Heapify Algorithm | Max Heapify | Min Heapify
+#### Max-Heapify/Min-Heapify
+1. Concepts
+    * If heapsize = $N$, the range of leaves = $⌊N / 2⌋$ to $N - 1$ (0-based)
+    * Range of internal nodes, $0$ to $⌊N / 2⌋ - 1$
+2. Heap Property
+    * Max-heap/Min-heap root node should be greater/less than all left and right subtree nodes and it is recursively true for all subtrees 
+    * A leaf node always follow the max/min heap property.
+3. Heapify
+    * Heapify is a process of creating/rearranging a heap data structure by comparing each parent with its children **recursively** from a complete binary tree
+    * e.g., Convert the given binary tree to max-heap
+        ```bash
+        1
+        ├── 14
+        │   ├── 8
+        │   │   ├── 2
+        │   │   └── 4
+        │   └── 7
+        │       └── 6
+        └── 10
+            ├── 9
+            └── 3
+        ```
+        1. Stop condition
+            * Reach leaf node
+            * Root > L && Root > R
+        2. `Node 1`
+            * is not leaf node
+            * `Root > L && Root > R` is not true
+            * Left subtree is already a heap and Right subtree is already a heap
+            * Take the `max` element from Left node or Right node
+            * `Node 1` and `Node 14` will be swapped
+                ```bash
+                14
+                ├── 1
+                │   ├── 8
+                │   │   ├── 2
+                │   │   └── 4
+                │   └── 7
+                │       └── 6
+                └── 10
+                    ├── 9
+                    └── 3
+                ```
+        3. `Node 1`
+            * is not leaf node
+            * `Root > L && Root > R` is not true
+            * Take the `max` element from Left node or Right node
+            * `Node 1` and `Node 8` will be swapped
+                ```bash
+                14
+                ├── 8
+                │   ├── 1
+                │   │   ├── 2
+                │   │   └── 4
+                │   └── 7
+                │       └── 6
+                └── 10
+                    └── 9
+                    └── 3
+                ```
+        4. `Node 1`
+            * is not leaf node
+            * `Root > L && Root > R` is not true
+            * Take the `max` element from Left node or Right node
+            * `Node 1` and `Node 4` will be swapped
+                ```bash
+                14
+                ├── 8
+                │   ├── 4
+                │   │   ├── 2
+                │   │   └── 1
+                │   └── 7
+                │       └── 6
+                └── 10
+                    └── 9
+                    └── 3
+                ```
+        5. `Node 1`
+            * is a leaf node
+            * Stop
+4. Time Complexity: $O(log N)$
+5. Space Complexity: $O(log N)$
+
+### Build Heap Algorithm
+#### Important Notes
+* If you want to apply Heapify algorithm to $i^{th}$ node, **both the left subtree and the right subtree of the node should already be a heap.**
+#### Build Max/Min Heap
+* Build max-heap from the given array
+    * `a = [3, 6, 5, 0, 8, 2, 1, 9]`
+    * Leaf nodes: $floor(N/2)$ to $N - 1$ / 4 to 7  
+    * Internal node: $0$ to $floor(N/2) - 1$ / 0 to 3
+* Heapify the last internal node first, because their left and right subtree should follow heap property first and then heapify parent internal nodes. (Bottom up)
+* `a = [3, 6, 5, 0, 8, 2, 1, 9]`
+    ```markdown
+           3     
+          / \    
+        6     5  
+       / \   / \ 
+      0   8 2   1
+     /           
+    9
+    ```
+    * Internal nodes: [0] to [3] (`[3, 6, 5, 0]`)
+    * Leaf nodes: [4] to [7] (`[8, 2, 1, 0]`)
+1. Starts with the Last internal node `0`
+    * To make left subtree of `Node 0` into a max-heap, swap `Node 0` and `Node 9`
+        ```markdown
+               3     
+              / \    
+            6     5  
+           / \   / \ 
+          9   8 2   1
+         /           
+        0
+        ```
+2. $2^{nd}$ last internal node `5`
+    * Both subtrees of `Node 5` are already heaps
+        ```markdown
+               3     
+              / \    
+            6     5  
+           / \   / \ 
+          9   8 2   1
+         /           
+        0
+        ```
+3. the next last internal node `6`
+    * Left subtrees of `Node 6` is not a heap. So we take the max value between 9 and 8. Swap it with 6.
+    * Check the swap value 6 and 0 (previously done), but it's already a max heap.
+        ```markdown
+               3     
+              / \    
+            9     5  
+           / \   / \ 
+          6   8 2   1
+         /           
+        0
+        ```
+4. the next last internal node `3`
+    * 3 < 9, so we swap 3 and 9
+        ```markdown
+               9     
+              / \    
+            3     5  
+           / \   / \ 
+          6   8 2   1
+         /           
+        0
+        ```
+    * Check the swapped value is in the correct place.
+    * Take the max value between left node and right node and swap it. 3<=>8
+        ```markdown
+               9     
+              / \    
+            8     5  
+           / \   / \ 
+          6   3 2   1
+         /           
+        0
+        ```
+5. Done
+##### Time complexity
+* Bottom-up heapify has a time complexity of $O(N)$, while top-down heapify has a time complexity of $O(log N)$. Bottom-up heapify is typically faster for large heaps, while top-down heapify is faster for small heaps
+* Rewatch https://youtu.be/VkKmmwzfIG4
+##### Space Complexity
+* $I(log N)$
+
+### Heap Algorithms | Extract Max | Increase Key | Decrease Key | Insert Element
+#### Extract Max
+1. Save max value
+2. Copy last element to root
+3. Remove the old root and decrease the heap size
+4. Heapify the new root
+* Example 
+    * `a = [9,8,7,5,4,3,2]`
+        ```markdown
+           9   
+          / \  
+         8   7 
+        / \ / \
+        5 4 3 2
+        ```
+    * Return 9 and make last node to the new root
+        ```markdown
+           2   
+          / \  
+         8   7 
+        / \ /
+        5 4 3
+        ```
+    * Heapify
+        ```markdown
+           8   
+          / \  
+         2   7 
+        / \ /
+        5 4 3
+        ```
+        ```markdown
+           8   
+          / \  
+         5   7 
+        / \ /
+        2 4 3
+        ```
+5. Time complexity: $O(log N)$ - Max Heapify
+6. Space Complexity: $O(log N)$ - Max Heapify
+#### Increase Key
+```markdown
+     9   
+    / \  
+  8     7 
+ / \   / \
+6   5 4   3
+```
+1. Update Node value
+    ```markdown
+          9   
+        /   \  
+      8      7 
+     / \    / \
+    6   50 4   3
+    ```
+2. Up-heapify (assuming a max heap) to restore the heap property
+    1. Parent > current node
+    2. or
+    3. Current node becomes the root of the tree
+    ```markdown
+         50   
+       /   \  
+      9     7 
+     / \   / \
+    6   8 4   3
+    ```
+3. Time Complexity: $O(log N)$ - Heapify
+4. Space Complexity: $O(1)$ - Using array 
+#### Decrease Key
+```markdown
+         9   
+        / \  
+      8     7 
+     / \   / \
+    6   5 4   3
+   / \
+  2   1
+```
+1. Decrease Node 8 to value 0 (Node can move only downward)
+    ```markdown
+             9   
+            / \  
+          0     7 
+         / \   / \
+        6   5 4   3
+       / \
+      2   1
+    ```
+2. Max-heapify current node
+    ```markdown
+             9   
+            / \  
+          6     7 
+         / \   / \
+        0   5 4   3
+       / \
+      2   1
+    ```
+    ```markdown
+             9   
+            / \  
+          6     7 
+         / \   / \
+        2   5 4   3
+       / \
+      0   1
+    ```
+3. Time complexity: $O(log N)$
+4. Space complexity: $O(log N)$
+#### Insert Key
+* In a complete binary tree, insert elements at last level from left to right
+* Example
+    ```markdown
+             20   
+            / \  
+          9     8 
+         / \   / \
+        7   6 5   4
+       /
+      3   
+    ```
+1. Insert at the end of heap (Insert `12`)
+    ```markdown
+             20   
+            / \  
+          9     8 
+         / \   / \
+        7   6 5   4
+       / \
+      3   12
+    ```
+2. HeapifyUp(Percolation up)
+    ```markdown
+             20   
+            / \  
+          9     8 
+         / \   / \
+        12   6 5   4
+       / \
+      3   7
+    ```
+    ```markdown
+             20   
+            / \  
+          12    8 
+         / \   / \
+        9   6 5   4
+       / \
+      3   7
+    ```
+3. Time complexity: $O(log N)$
+4. Space complexity: $O(1)$ - applying while loop instead recursion
+#### Heap Operations Time Complexity
+1. find_max: $O(1)$
+2. delete_max: $O(log N)$
+3. insert: $O(log N)$
+4. increase_key: $O(log N)$
+5. decrease_key: $O(log N)$
+6. find_min: $O(N)$
+7. delete_random_element: $O(N)$
+8. search_random_element: $O(N)$
+
+### Heapsort Algorithm | CODE Implementation
+#### Heapsort
+* Heapsort = sorting using heap
+* Algorithm used for heap sort
+    * Extract Max/Min (Heapify Algo)
+* Example
+    * a = [9, 6, 8, 2, 1, 4, 3]
+    ```markdown
+         9   
+        / \  
+      6    8 
+     / \   / \
+    2   1 4   3
+    ```
+    1. ExtractMax
+        1. Extract root / Return root
+            ```markdown
+                 null   
+                / \  
+              6    8 
+             / \   / \
+            2   1 4   3
+            ```
+            `return 9`
+        2. Copy the last node to the new root / Heapsize decreased
+            ```markdown
+                 3
+                / \  
+              6    8 
+             / \   /
+            2   1 4  
+            ```
+        3. Max Heapify
+            ```markdown
+                 8
+                / \  
+              6    3 
+             / \   /
+            2   1 4  
+            ```
+            ```markdown
+                 8
+                / \  
+              6    4 
+             / \   /
+            2   1 3  
+            ```
+* Time complexity: $O(n * log n)$ - Build heap $O(n)$ / $O(log N)$ for each the N Number of elements $O(N)$
+#### Ref
+https://www.youtube.com/playlist?list=PLEJXowNB4kPyP2PdMhOUlTY6GrRIITx28
+
