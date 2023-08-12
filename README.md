@@ -787,3 +787,244 @@ Binary search is a search algorithm that is used to quickly find a value in a so
 #### Ref
 https://www.youtube.com/playlist?list=PLEJXowNB4kPyP2PdMhOUlTY6GrRIITx28
 
+### Priority Queue
+* Priority Queue is nothing more than Abstract Data Type that meets:
+    * Each element in a priority queue has na associated priority.
+    * Elements with high priority are served before elements with low priority.
+    * Duplicates:
+        * In some implementations, if two elements have the same priority, they are served in the same order in which they were enqueued.
+        * In other implementations, the order of elements with the same priority is undefined.
+* Mostly implemented with heap
+
+## Sorting
+### Notes
+#### Stability in sorting algorithms ("Is Quicksort stable?")
+* Stable sort algorithms sort equal elements in the same order they appear in the input.
+    * e.g., card deck / 7 - ♠ / 5 - ♥ / 2 - ♥ / 5 - ♠
+        * Stable sort:
+            * 7 - ♠ / 5 - ♥ / 5 - ♠ / 2 - ♥
+        * Unstable sort:
+            * 7 - ♠ / 5 - ♥ / 5 - ♠ / 2 - ♥
+            * or
+            * 7 - ♠ / 5 - ♠ / 5 - ♥ / 2 - ♥
+* When equal elements are indistinguishable, such as with integers, or more generally, any data where the entire element is the key, stability is not an issue.
+* Stability is also not an issue if all keys are different.
+* For `heapsort`, see Heap data structure above. Heap sort is great, but not stable
+##### Make unstable sorting algorithms stable
+1. Artificially extend the key comparison
+    1. e.g., Sort by both `Rank` and `Suit`
+        * May require additional time and space
+#### Merge Sort for Linked Lists
+* Merge sort is often preferred for sorting a linked list. The slow random-access performance of a linked list makes some other algorithms (such as quicksort) perform poorly, and others (such as heapsort) completely impossible
+##### Merge Sort
+1. If the head is NULL or there is only one element in the Linked List, then return
+2. Else divide the Linked List into two halves,
+    * `FrontBackSplit(head, &a, &b); /* a and b are two halves */`
+3. Sort the two halves a and b
+    * `MergeSort(a);`
+    * `MergeSort(b);`
+4. Merge the sorted a and b, and update the head pointer using headRef
+    * `*headRef = SortedMerge(a, b);`
+
+### Merge Sort
+#### Concept
+1. Divide the unsorted list into `n` sublists, each containing one element (a list of one element is considered sorted)
+2. Repeatedly merge sublists to produce new sorted sublists until there is only one sublist remaining. This will be the sorted list.
+#### Example
+`a = [3, 7, 8, 5, 4, 2, 6, 1]`
+1. `mergeSort`
+    ```bash
+              [3, 7, 8, 5, 4, 2, 6, 1]
+                       /   \
+            [3, 7, 8, 5]   [4, 2, 6, 1]
+                /  \           /  \
+           [3, 7]  [8, 5] [4, 2]  [6, 1]
+            / \     / \     / \      / \
+          [3] [7] [8] [5] [4] [2]  [6] [1]
+    ```
+2. `merge` - merging unit length cells into sorted subarrays
+    ```bash
+    [3] [7]  [8] [5]  [4] [2]  [6] [1]
+      \ /      \ /      \ /      \ /
+    [3, 7]   [5, 8]   [2, 4]   [1, 6]
+         \   /             \   /
+      [3, 5, 7, 8]       [1, 2, 4, 6]
+                  \     /
+        [1, 2, 3, 4, 5, 6, 7, 8]
+    ```
+#### Time Complexity
+* Given the `n` number of objects,
+    * Average: $O(n log n)$
+    * Worst case: $O(n log n)$
+#### Space Complexity
+* Auxiliary space: $O(n)$
+
+
+### Quick Sort
+* Quicksort is an efficient, general-purpose sorting algorithm.
+* Quicksort is a divide-and-conquer algorithm
+#### How does QuickSort work?
+* The key process in quickSort is a `partition()`. The target of partitions is to place the pivot (any element can be chosen to be a pivot) at its correct position in the sorted array and put all smaller elements to the left of the pivot, and all greater elements to the right of the pivot.
+* `Partition` is done recursively on each side of the pivot after the pivot is placed in its correct position and this finally sorts the array
+##### Choice of Pivot:
+* Always pick the first element as a pivot
+* Always pick the last element as a pivot
+* Pick a random element as a pivot
+* Pick the middle as the pivot (ideal)
+##### Partition Algorithm
+* The logic is simple, we start from the leftmost element and keep track of the index of smaller (or equal) elements as `i`. While traversing, if we find a smaller element, we swap the current element with `arr[i]`. Otherwise, we ignore the current element.
+#### Example
+* **The pivot element is compared to all of the items** starting with the first index. If the element is greater than the pivot element, a second pointer is appended
+* When compared to other elements, **if a smaller element than the pivot element is found, the smaller element is swapped with the larger element identified before.**
+`a = [8, 7, 6, 1, 0, 9, 2]`
+1. Select the Pivot Element
+    * `pivot = 2`
+2. Rearrange the Array
+    1. A pointer is fixed at the pivot element. The pivot element is compared with the elements beginning from the first index.
+        ```bash
+        8   7   6   1   0   9   2
+                                ↑
+                                pp
+        ```
+    2. If the element is greater than the pivot element, a second pointer is set for that element.
+        ```bash
+        8   7   6   1   0   9   2
+        ↑                       ↑
+        p2                      pp
+        ```
+        * `8 > 2`
+    3. Now, pivot is compared with other elements. If an element smaller than the pivot element is reached, the smaller element is swapped with the greater element found earlier.
+        ```bash
+        8   7   6   1   0   9   2
+        ↑   ↑                   ↑
+        p2  i                   pp
+        ```
+        ```bash
+        8   7   6   1   0   9   2
+        ↑       ↑               ↑
+        p2      i               pp
+        ```
+        ```bash
+        8   7   6   1   0   9   2
+        ↑           ↑           ↑
+        p2          i           pp
+        ```
+        ```bash
+        1   7   6   8   0   9   2
+                                ↑
+                                pp
+        ```
+        * `1` is swapped with the `8` since `1 < 2`
+    4. Again, the process is repeated to set the next greater element as the second pointer. And, swap it with another smaller element.
+        ```bash
+        1   7   6   8   0   9   2
+            ↑                   ↑
+            p2                  pp
+        ```
+        ```bash
+        1   7   6   8   0   9   2
+            ↑                   ↑
+            p2                  pp
+        ```
+        ```bash
+        1   7   6   8   0   9   2
+            ↑   ↑               ↑
+            p2  i               pp
+        ```
+        ```bash
+        1   7   6   8   0   9   2
+            ↑       ↑           ↑
+            p2      i           pp
+        ```
+        ```bash
+        1   7   6   8   0   9   2
+            ↑           ↑       ↑
+            p2          i       pp
+        ```
+        ```bash
+        1   0   6   8   7   9   2
+                                ↑
+                                pp
+        ```
+        * `0` is swapped with the `7` since `0 < 2`
+    5. The process goes on until the second last element is reached.
+        ```bash
+        1   0   6   8   7   9   2
+                ↑               ↑
+                p2              pp
+        ```
+        ```bash
+        1   0   6   8   7   9   2
+                ↑           ↑   ↑
+                p2          i   pp
+        ```
+        * No swap since 8, 7, 9 are all greater than pivot 2
+        * And reached the last element
+    6. Finally, the pivot element is swapped with the second pointer.
+        ```bash
+        1   0   6   8   7   9   2
+                ↑               ↑
+                p2              pp
+        ```
+        ```bash
+        1   0   2   8   7   9   6
+                ↑               
+                pp              
+        ```
+3. Divide Subarrays
+    * Pivot elements are again chosen for the left and the right sub-parts separately. And, **step 2** is repeated.
+        * left
+            ```bash
+            1   0              
+            ```
+        * right
+            ```bash
+            2   8   7   9   6
+                            ↑               
+                            pp              
+            ```
+            ```bash
+            8   7   9   6
+                        ↑               
+                        pp              
+            ```
+            ```bash
+            6   7   9   8
+            ↑           
+            pp            
+            ```
+            * right 
+                ```bash
+                7   9   8
+                        ↑
+                        pp
+                ```
+                * Last elmeent swaps with pivot since reached the last element
+                ```bash
+                7   8   9
+                    ↑    
+                    pp    
+                ```
+                * left
+                    ```bash
+                    7
+                    ```
+                * right
+                    ```bash
+                    9
+                    ```
+4. Result
+    ```bash
+    0   1   2   6   7   8   9
+    ```
+#### Time complexity
+* Worst Case: $O(n^2)$
+    * It occurs when the pivot element picked is either the greatest or the smallest element.
+    * This condition leads to the case in which the pivot element lies in an extreme end of the sorted array. One sub-array is always empty and another sub-array contains n - 1 elements. Thus, quicksort is called only on this sub-array.
+    * However, the quicksort algorithm has better performance for scattered pivots.
+* Best Case: $O(n log n)$
+    * It occurs when the pivot element is always the middle element or near to the middle element.
+* Average Case: $O(n log n)$
+    * It occurs when the above conditions do not occur.
+#### Space Complexity
+* $O(log n)$
