@@ -1028,3 +1028,465 @@ https://www.youtube.com/playlist?list=PLEJXowNB4kPyP2PdMhOUlTY6GrRIITx28
     * It occurs when the above conditions do not occur.
 #### Space Complexity
 * $O(log n)$
+
+### General about Sorting
+#### Insertion Sort
+* Time Complexity: $O(n^2)$
+* Invariant: S is sorted
+* Start with empty list `S` & unsorted list `I` of n items
+* pseudocode
+    ```bash
+    for(each item * in I) {
+        insert * into S, in sorted order
+    }
+    ```
+* If `S` is linked list, $O(n)$ worst-case time to find right position
+* If `S` is array, $O(n)$ worst-case time to shift higher items over
+* If `S` is array, insertion sort is in-place.
+    * Example
+        * `I = [7, 3, 9, 5]`
+            ```bash
+            7   3   9   5
+            └─────I─────┘
+            ```
+            ```bash
+             7   3   9   5
+            └S┘  └───I───┘
+            ```
+            ```bash
+            3   7   9   5
+            └─S─┘   └─I─┘
+            ```
+            ```bash
+            3   7   9   5
+            └───S───┘ └─I─┘
+            ```
+            ```bash
+            3   5   7   9
+            └─────S─────┘
+            ```
+* If `S` is a balanced search tree, running time $O(nlogn)$
+#### Selection Sort
+* Find $k^{th}$ smallest key in list
+* Time Complexity: $O(n^2)$
+* Invariant: `S` is sorted
+* Start with empty list `S` & unsorted list `I` of n items
+* pseudocode
+    ```bash
+    for(i=0;i<n;i++) {
+        x <- item in I with smallest key
+        remove x from I
+        Append x to end of S
+    }
+    ```
+* Whether S is array or linked list, searching for the smallest item $O(n^2)$ time even in the best case.
+* In-place
+* Example
+    * `I = [7, 3, 9, 5]`
+        ```bash
+        7   3   9   5
+        └─────I─────┘
+        ```
+        * Swap 3 and 7 since 3 is the smallest in I
+        ```bash
+         3   7   9   5
+        └S┘  └───I───┘
+        ```
+        * Swap 5 and 7 since 5 is the smallest in I
+        ```bash
+        3   5   9   7
+        └─S─┘   └─I─┘
+        ```
+        * Swap 9 and 7 since 7 is the smallest in I
+        ```bash
+        3   5   7   9
+        └───S───┘ └─I─┘
+        ```
+        ```bash
+        3   5   7   9
+        └─────S─────┘
+        ```
+#### Heap Sort
+* Selection Sort where I is a heap
+* Start with empty list S and unsorted list I of n items
+* toss all items in I onto heap h(ignoring heap-order)
+* h.bottomUpHeap(); => $O(n)$ time
+* pseudocode
+    ```bash
+    for(i=0;i<n;i++){
+        x = h.removeMin(); => $O(logn)$
+        Append x to the end of S
+    }
+    ```
+* Time Complexity: $O(nlogn)$
+* In-place: Maintain heap backward at the end of the array
+* Example
+    * `I = [7, 3, 9, 5]`
+    * backward heap
+        ```bash
+        7   3   9   5
+        └─────I─────┘
+            5
+           / \
+           9 3
+          /
+         7
+        ```
+    * BottomUpHeapify
+        ```bash
+        9   3   7   5
+        └─────I─────┘
+            5
+           / \
+           7 3
+          /
+         9
+        ```
+        ```bash
+        9   5   7   3
+        └─────I─────┘
+            3
+           / \
+           7 5
+          /
+         9
+        ```
+    * RemoveMin and store it at the end of array S
+        ```bash
+        9   5   7   3
+        └─────I─────┘
+            3
+           / \
+           7 5
+          /
+         9
+        ```
+        ```bash
+         3   9   5   7   
+        └S┘  └───I───┘  
+            9
+           / \
+           7 5
+        ```
+        ```bash
+         3   9   7   5   
+        └S┘  └───I───┘
+            5
+           / \
+           7 9
+        ```
+    * RemoveMin and store it at the end of array S
+        ```bash
+         3   9   7   5   
+        └S┘  └───I───┘
+            5
+           / \
+           7 9
+        ```
+        ```bash
+        3   5   7   9
+        └─S─┘   └─I─┘
+            9
+           /
+           7 
+        ```
+        ```bash
+        3   5   9   7
+        └─S─┘   └─I─┘
+            7
+           /
+           9 
+        ```
+    * RemoveMin and store it at the end of array S
+        ```bash
+        3   5   9   7
+        └─S─┘   └─I─┘
+            7
+           /
+           9 
+        ```
+        ```bash
+        3   5   7   9
+        └───S───┘  └I┘
+            9
+        ```
+    * Done
+        ```bash
+        3   5   7   9
+        └───S───┘  └I┘
+            9
+        ```
+        ```bash
+        3   5   7   9
+        └─────S─────┘
+        ```
+* Excellent for arrays, clumsy for linked list
+
+## Graph
+* Graph is an abstract data type that is meant to implement the undirected graph and directed graph concepts from the field of graph theory within mathematics.
+* A graph data structure consists of a finite (and possibly mutable) set of vertices (also called nodes and points), together with a set of unordered pairs of these vertices for an undirected graph or a set of ordered pairs for directed graph. These pairs are known as edges (also called links or lines), and for a directed graph are also known as edges.
+* A graph data structure may also associate to each edge some edge value, such as a symbolic label or a numeric attribute (cost, capacity, length, etc).
+* https://www.youtube.com/watch?v=oFVYVzlvk9c&t=14s&ab_channel=MITOpenCourseWare
+### Graph Traversal Strategies
+#### Breadth First Search (BFS)
+* BFS Traversal is an approach that is sued for exploring all of the nodes in a given graph. This traversal technique chooses an individual node, then explores every single of its neighbors one at a time. It persists on to inspect additional vertices and repeats the process for all of the nearby vertices after finishing those.
+#### Depth First Search(DFS)
+* In case of DFS Algo exploration of the new vertex begins at any point. After the new vertex has been examined, the investigation of the selected vertex continues. When all reachable vertices have been thoroughly explored, the search finishes. This search procedure works best when presented in a recursive way. DFS employs a method that explores the graph deeper whenever feasible. Because the search may be repeated from several sources, the predecessor subgraph created by DFS may be formed of various tres.
+
+### Terminology
+* $G = (V, E)$
+* $V = Verticies$
+* $E = Edges ⊆ V × V$ (corss product) means, **edges are pairs of vertices**
+* Unordered notation $e = \{v, w\}$
+* Ordered notation $e = (v, w)$ $e' = (w, v)$
+
+### Simple Graphs
+* No self loops
+* Every edge is distinct
+    * **NOT** a simple graph
+        ```mermaid
+        graph LR;
+            A-->A;
+            A-->B;
+            A-->B;
+            A-->B;
+        ```
+* $|E| = O(|V|^2)$
+    * Directed: $|E| ≤ 2\frac{|V|}{2}$
+        * $|V|$ means take a unique pair of vertices
+        * $\frac{|V|}{2}$ means one edge per two vertices
+        * $2\frac{|V|}{2}$ means two edge between a unique pair of vertices since it's directed
+    * undirected: $|E| ≤ \frac{|V|}{2}$
+        * $\frac{|V|}{2}$ means two edge between a unique pair of vertices and not distinctive if target and destination are flipped
+    * Binomial efficient
+        * $2\frac{|V|}{2} = \frac{|V|}{2} = O(|V|^2)$
+
+### Neighbors
+* The **outgoing neighbor set** of $u ∈ V$ is $Adj^+(u) = \{u ∈ V | (u, v) ∈ E\}$
+* The **incoming neighbor set** of $u ∈ V$ is $Adj^-(u) = \{u ∈ V | (u, v) ∈ E\}$
+* The **out-degree** of a vertex $u ∈ V$ is $deg^+(u) = |Adj^+(u)|$
+* The **in-degree** of a vertex $u ∈ V$ is $deg^-(u) = |Adj^-(u)|$
+* For undirected graphs, $Adj^-(u) = Adj^+(u)$ and $deg^-(u) = deg^+(u)$
+* Dropping superscript defaults to outgoing, i.e., $Adj(u) = Adj^+(u)$ and $deg(u) = deg^+(u)$
+* **Degree**: the degree of a vertex is the number of edges connecting it
+$$
+    \sum_{u ∈ V}{deg^+(u) = 
+        \begin{cases}
+            2|E|    & \quad \text{if undirected} \\
+            |E|     & \quad \text{if directed}
+        \end{cases}
+    }
+$$
+#### Example
+```mermaid
+graph LR;
+    0-->2;
+    2-->1;
+    1-->0;
+    1-->2;
+```
+* outgoing neighbor set: $Adj^+(0) = \{2\}$ 
+* incoming neighbor set: $Adj^-(0) = \{1\}$
+* out-degree: $deg^+(1) = 2$
+* in-degree: $deg^+(0) = 1$
+```mermaid
+graph LR;
+    0---1;
+```
+* $|E| = 1$
+* $\sum{deg} = 2$
+
+### Graph Representations
+* Edge list
+    * $\{(1,0), (0,2), (1,2), (2,1)\}$
+* Adjacency list
+    * Set maps vertex $u$ -> $Adj(u)$
+    * Store $Adj^+(u)$ as direct access/hash table array 
+* Adjacency matrix
+* ... and many others
+
+### Paths
+* $p=(v1, v2, ..., v_k) \; \text{where} \; (v_i, v_{i+1}) ∈ E \; ∀i ∈ \{1,...,k-1\}$
+```mermaid
+graph LR;
+    v1-->v2;
+    v2-->v1;
+    v2-->v3;
+    v4-->v3;
+    v1-->v4;
+```
+* $p = (v1, v2, v3)$
+* $l(p) := \text{length}$
+* $\delta(u, v) := \text{length of shortest path}$
+* Simple Paths: No repeat
+
+### Model Graph Problems
+* Single Pair Reachability (G, s, t):
+    * Is there a path in G from s to t?
+* Single Pair Shortest Path (G, s, t):
+    * Return distance from s to t and a shortest path
+* Single Source Shortest Paths (G, s):
+    * Return shortest distance from s to all t plus a shortest path tree
+
+### Graph
+```mermaid
+graph LR;
+    A--1---B;
+    B--2---C;
+    C--3---D;
+    C--3---E;
+    D--4---F;
+    E--4---F;
+```
+* By adding one edge `A---D;` It can change whole shortest path and we have to compute them again
+
+### Level Sets
+* $L_k = \{v ∈ V : d(s, v) = k\}$
+```mermaid
+flowchart LR
+    subgraph L0
+    0
+    end
+    subgraph L1
+    0---1
+    end
+    subgraph L2
+    1---2
+    end
+    subgraph L3
+    2---3
+    2---4
+    2---5
+    end
+    subgraph L4
+    3---6
+    4---6
+    3---7
+    end
+```
+
+### Breath-First Search
+* Base case $(i=1): L_0 = \{s\}, \delta(s,s) = 0, P = \{\}$
+    * $L_0 = \{s\}$: means Level 0 from source `s` is only itself `s`
+    * $\delta(s,s) = 0$: means distance from `s` to `s` is 0
+    * $P = \{\}$: means Path is empty
+* Inductive Step: To compute $L_i$:
+    * for every vertext $u$ in $L_{i-1}$:
+        * for every vertext $v ∈ Adj(u)$ that does not apperar in any $L_j$ for $j < i$:
+            * add $v$ to $L_i$, set $\delta(s,v) = i$, and set $P(v) = u$
+* Repeatedly compute $L_i$ from $L_j$ for $j < i$ for increasing $i$ until $L_i$ is the empty set
+* Set $\delta(s, v) = \infin$ for any $v ∈ V$ for which $\delta(s, v)$ was not set
+
+```mermaid
+flowchart LR
+    subgraph L0
+    0
+    end
+    subgraph L1
+    0---1
+    end
+    subgraph L2
+    1---2
+    end
+    subgraph L3
+    2---3
+    2---4
+    2---5
+    end
+    subgraph L4
+    3---6
+    4---6
+    3---7
+    end
+```
+* Explore graph one level set at a time
+* Smaple problem: Single_Source_Shortest_Paths(G, s)
+
+### New Problem
+* Single Source Reachability 
+```mermaid
+flowchart LR
+    subgraph source
+    C
+    end
+    subgraph reachable
+    D
+    B
+    end
+    subgraph not reachable
+    A
+    end
+    A-->B
+    A-->C
+    D-->B
+    C-->D
+```
+
+```mermaid
+---
+title: Parent Tree
+---
+flowchart LR
+    subgraph source
+    C
+    end
+    subgraph reachable
+    D
+    B
+    end
+    subgraph not reachable
+    A
+    end
+    C-->D
+    A-->C
+    A-->B
+    D-->B
+    D-. "`P(v)=s`" .->C
+    B-. "`P(w)=v`" .->D
+```
+
+### Depth-First Search
+* Strategy: Set P(s) = None and then run visit(s)
+    * visit(u):
+        * for every $v ∈ Adj^+(u):$
+            * if $P(v)$ = None:
+                * Set $P(v) = u$
+                * Call visit(v)
+```mermaid
+flowchart LR
+    1---2
+    2---3
+    2---5
+    3---4
+```
+* Traversal order not the same as BFS! Not level sets
+* Claim: DFS visits all rechable $v ∈ V$ to connecting 
+* Induction
+    * Consider v with $δ(s, v) = k + 1$
+    * Take $u ∈ V$ previous on shortest path => $δ(s,v) = k$
+    * DFS consider $v ∈ Adj^+(v)$
+        1. P(v) ≠ None 
+        2. P(v) = None 
+
+### Runtime Comparison
+* Breadth-First Search
+    * $O(|V| + |E|)$
+    * Linear in the size of the input
+* Depth-First Search 
+    * $O(|E|)$
+    * Linear in the number of edges
+
+### Connectivity on Undirected Graphs
+* An undirected graph is connected if there is a path connecting every pair of vertices
+* In a directed graph, vertex $u$ may be reachable from $v$, but $v$ may not be rechable from $u$
+* Connectivity is more complicated for directed graphs (we won't discuss in this class)
+* Connectivity (G): is undirected graph G connected?
+* Connected_Components (G): given undirected graph $G = (V, E)$, return partition of V into subsets $V_i ⊆ V \text{(connected components)}$ where each $V_i$ is connected in $G$ and there are no edges between vertices from different connected components
+
+### DAGS and Topological Ordering
+* Directed Acyclic Graph (DAG)
+    * Directed graph that contains no directed cycle
+* Topological order
+    * Ordering $f$ over vertices where $f(u) < f(v)$ for all $(u,v) ∈ E$
+* Finishing order
+    * Order in which a full-DFS finishes visiting each vertex
